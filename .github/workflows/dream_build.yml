@@ -1,0 +1,23 @@
+name: Dream_flask_app Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build_and_push:
+    name: Build and push Docker image to Docker Hub private repo
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: Build the Docker image
+      run: docker build -t dolevshapira1/dream:dream_flask_app-$(git rev-parse --short HEAD) .
+
+    - name: Push the Docker image to Docker Hub
+      run: |
+        docker login -u ${{ secrets.REPO_USER }} -p ${{ secrets.REPO_PASSWORD }}
+        docker push dolevshapira1/dream:dream_flask_app-$(git rev-parse --short HEAD)
+        docker logout
